@@ -36,6 +36,21 @@ function generateCPF(): string {
   return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${digit1}${digit2}`;
 }
 
+// Date manipulation helpers
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function randomSymmetricDayOffset(maxDays: number): number {
+  return Math.floor(Math.random() * (maxDays * 2 + 1)) - maxDays;
+}
+
+function randomIntBetween(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function generateTimeline(
   status: DeliveryStatus,
   createdAt: Date,
@@ -111,8 +126,9 @@ function generateTimeline(
 }
 
 function generateDelivery(id: number): Delivery {
-  const createdAt = faker.date.recent({ days: 7 });
-  const expectedDeliveryAt = faker.date.soon({ days: 3 });
+  const offsetDays = randomSymmetricDayOffset(30);
+  const createdAt = addDays(new Date(), offsetDays);
+  const expectedDeliveryAt = addDays(createdAt, randomIntBetween(1, 5));
 
   const statusOptions: DeliveryStatus[] = [
     'PENDING',
